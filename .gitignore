@@ -43,3 +43,4 @@ nbproject/*
 .sass-cache/
 #github
 .github
+composer.phar
