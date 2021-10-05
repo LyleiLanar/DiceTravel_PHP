@@ -23,13 +23,8 @@ class JourneysController extends AppController
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Users'],
-        ];
-        /** @var Journey[] $journeys */
-        $journeys = $this->paginate($this->Journeys, $this->paginate);
 
-        $this->set(compact('journeys'));
+
     }
 
     /**
