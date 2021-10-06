@@ -28,11 +28,12 @@
     <div>
         <h3>Flow</h3>
         <label for="search-field"></label>
-        <input name="search_field" id="search-field" type="text">
+        <input name="search field" id="search-field" type="text">
         <button>Search!</button>
     </div>
     <div>
-        <button>refresh</button>
+        <!-- ez lesz a flow helye -->
     </div>
-
 </div>
+
+<?= $this->Html->script('journey-index')?>

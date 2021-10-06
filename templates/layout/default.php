@@ -29,6 +29,7 @@
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
+    <?= $this->Html->script('jquery-3.6.0.js') ?>
     <?= $this->fetch('script') ?>
 </head>
 <body>
