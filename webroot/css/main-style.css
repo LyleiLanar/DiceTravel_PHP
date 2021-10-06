@@ -1,0 +1,54 @@
+
+*
+{
+    margin: 0;
+}
+body {
+    background: #badce3;
+    box-sizing: border-box;
+}
+
+#dataview-row{
+    background-color: #6cb2eb;
+}
+
+.content {
+    padding: 2rem;
+    background: #6cb2eb;
+    border-radius: 0.4rem;
+    /* Thanks Stripe */
+    box-shadow: 0 7px 14px 0 rgba(60, 66, 87, 0.1),
+    0 3px 6px 0 rgba(0, 0, 0, 0.07);
+}
+
+.container {
+    margin: 0 auto;
+    max-width: 112.0rem;
+    padding: 0 2.0rem;
+    position: relative;
+    width: 100%;
+}
+
+.boxname{
+    top:-12px;
+    position: relative;
+    background-color: orangered;
+    display: block;
+    max-width: max-content;
+    padding: 1vh 0.5em 1vh 0.5em;
+}
+
+#flow-frame-search-input-group{
+    top:-3em;
+    padding-right: 0.5em ;
+    position: relative;
+}
+
+.fas,.far{
+    font-size: 2em;
+    margin: 0.2em;
+}
+
+.boxname:hover {
+    filter: brightness(85%);
+}

@@ -25,11 +25,20 @@
 
     <link href="https://fonts.googleapis.com/css?family=Raleway:400,700" rel="stylesheet">
 
-    <?= $this->Html->css(['normalize.min', 'milligram.min', 'cake']) ?>
-
+    <?= $this->Html->css([
+        'normalize.min',
+        'milligram',
+        'bootstrap',
+        'fontawesome-all.css',
+        'main-style',
+    //    'cake',
+    ]) ?>
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
-    <?= $this->Html->script('jquery-3.6.0.js') ?>
+    <?= $this->Html->script([
+          'jquery-3.6.0',
+        'bootstrap.bundle.js',
+        ]) ?>
     <?= $this->fetch('script') ?>
 </head>
 <body>
