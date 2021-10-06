@@ -2,6 +2,7 @@
 /**
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Journey[]|\Cake\Collection\CollectionInterface $journeys
+ * @var string $loginName
  */
 ?>
 <div class="index content">
@@ -9,7 +10,7 @@
         <div class="col border border-dark rounded-3 me-3 mb-5 bg-warning">
             <span class="boxname border border-dark rounded-3"><h3>My Data</h3></span>
             <div class="row">
-                <span id="txt-user-name">user_name</span>
+                <span id="txt-user-name"><?= $loginName ?></span>
             </div>
             <div class="d-flex justify-content-end">
                 <span id="btn-md-modify"><i class="fas fa-cog"></i></span>

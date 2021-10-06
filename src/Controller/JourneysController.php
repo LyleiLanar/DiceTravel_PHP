@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Component\UsersComponent;
 use App\Model\Entity\Journey;
 use Cake\ORM\ResultSet;
 use SebastianBergmann\Type\IterableType;
@@ -11,11 +12,19 @@ use SebastianBergmann\Type\IterableType;
  * Journeys Controller
  *
  * @property \App\Model\Table\JourneysTable $Journeys
+ * @property UsersComponent $C_Users
  * @method \App\Model\Entity\Journey[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class JourneysController extends AppController
 {
     public int $kacsa = 1;
+
+    public function initialize(): void
+    {
+        parent::initialize();
+        $this->loadComponent('C_Users',['className'=>'Users']);
+    }
+
     /**
      * Index method
      *
@@ -23,8 +32,8 @@ class JourneysController extends AppController
      */
     public function index()
     {
-
-
+        $loginName = $this->C_Users->getUserNameById(70);
+        $this->set(compact(['loginName']));
     }
 
     /**
