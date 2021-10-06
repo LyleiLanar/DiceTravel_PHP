@@ -1,0 +1,8 @@
+'use strict';
+
+//onload
+$(function () {
+
+});
+
+
