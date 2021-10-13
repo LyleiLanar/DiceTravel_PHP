@@ -1,0 +1,7 @@
+Ez a cuccost a composer.json -> script tagbe kell beleírni
+***************************
+    "post-update-cmd": [
+        "npm install --prefix ./webroot/js axios",
+        "npm install --prefix ./webroot/js browserify"
+    ],
+***************************

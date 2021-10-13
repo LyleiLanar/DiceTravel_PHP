@@ -3,6 +3,12 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use App\Model\Domain\Constants;
+use App\Model\Entity\Journey;
+use App\Model\Entity\User;
+use ArrayObject;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -45,6 +51,13 @@ class JourneysTable extends Table
         $this->setDisplayField('title');
         $this->setPrimaryKey('id');
 
+        $this->addBehavior('Timestamp',
+            ['events' =>
+                ['Model.beforeSave' =>
+                    ['start_date' => 'new']
+                ]
+            ]);
+
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
@@ -70,15 +83,15 @@ class JourneysTable extends Table
             ->allowEmptyString('id', null, 'create');
 
         $validator
-            ->scalar('title')
-            ->maxLength('title', 50)
-            ->notEmptyString('title');
+            ->scalar('title', Constants::createValidationErrorMessage('title', Constants::NOT_SCALAR))
+            ->maxLength('title', 50, Constants::createValidationErrorMessage('title', Constants::MAX_LENGTH))
+            ->notEmptyString('title', Constants::createValidationErrorMessage('title', Constants::REQUIRED));
 
         $validator
-            ->scalar('start_location')
-            ->maxLength('start_location', 20)
-            ->requirePresence('start_location', 'create')
-            ->notEmptyString('start_location');
+            ->scalar('start_location', Constants::createValidationErrorMessage('start location', Constants::NOT_SCALAR))
+            ->maxLength('start_location', 20, Constants::createValidationErrorMessage('start location', Constants::MAX_LENGTH))
+            ->requirePresence('start_location', 'create', Constants::createValidationErrorMessage('start location', Constants::REQUIRED))
+            ->notEmptyString('start_location', Constants::createValidationErrorMessage('start location', Constants::REQUIRED));
 
         $validator
             ->dateTime('start_date')
@@ -89,8 +102,11 @@ class JourneysTable extends Table
             ->notEmptyString('closed');
 
         $validator
-            ->integer('visibility')
-            ->notEmptyString('visibility');
+            ->integer('visibility', Constants::createValidationErrorMessage('visibility', Constants::BE_INTEGER))
+//          ->notEmptyString('visibility', Constants::createValidationErrorMessage('visibility', Constants::REQUIRED))
+            ->add('visibility', 'visibilityRule', ['rule' => function ($value, array $context) {
+                return in_array($value, Journey::VISIBILITIES);
+            }, 'message' => Constants::createValidationErrorMessage('visibility', Constants::INVALID_VISIBILITY)]);
 
         return $validator;
     }
@@ -105,7 +121,21 @@ class JourneysTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'), ['errorField' => 'user_id']);
-
         return $rules;
+    }
+
+
+    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options)
+    {
+        /**
+         * @var Journey $entity
+         */
+
+        if (!$entity->user_id) {
+            $entity->user_id = 70;
+        };
+        if (!$entity->closed) {
+            $entity->closed = 0;
+        }
     }
 }

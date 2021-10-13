@@ -72,9 +72,40 @@
 
         </div>
         <div class="col-1 d-flex align-items-center flex-column">
-            <span id="btn-flow-frame-refresh" class="pe-1"><i class="fas fa-eye"></i></span>
-            <span id="btn-flow-frame-myflow" class="pe-1"><i class="fas fa-beer"></i></i></span>
-            <span id="btn-flow-frame-storyflow" class="pe-1"><i class="fas fa-eye-slash"></i></i></span>
+            <span id="btn-flow-frame-refresh" class="pe-1"><i class="fas fa-sync-alt"></i></span>
+            <span id="btn-flow-frame-myflow" class="pe-1"><i class="fas fa-home"></i></span>
+            <span id="btn-flow-frame-storyflow" class="pe-1"><i class="fas fa-road"></i></span>
+        </div>
+    </div>
+</div>
+
+<!--Ez lesz a Journey modal ablak-->
+<div class="modal fade" id="journey-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Start Journey</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="form-new-journey"
+                      action="<?= \Cake\Routing\Router::url(["controller" => "Journeys", "action" => "add", "_ext" => "json"]) ?>">
+                    <label for="new-journey-modal-title">Title</label>
+                    <input type="text" name="title" id="new-journey-modal-title">
+                    <label for="new-journey-modal-title">Start location</label>
+                    <input type="text" name="start_location" id="new-journey-modal-startlocation">
+                    <label for="new-journey-modal-visibility">Visibility</label>
+                    <select name="visibility" id="new-journey-modal-visibility">
+                        <option value="0">Private</option>
+                        <option value="1">Only friends</option>
+                        <option value="2">Public</option>
+                    </select>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btn-start-journey">Start</button>
+            </div>
         </div>
     </div>
 </div>

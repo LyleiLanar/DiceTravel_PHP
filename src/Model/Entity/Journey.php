@@ -22,6 +22,12 @@ use Cake\ORM\Entity;
  */
 class Journey extends Entity
 {
+    const VISIBILITY_PRIVATE = 0;
+    const VISIBILITY_FRIENDS = 1;
+    const VISIBILITY_PUBLIC = 2;
+
+    const VISIBILITIES = [self::VISIBILITY_PRIVATE, self::VISIBILITY_FRIENDS, self::VISIBILITY_PUBLIC];
+
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *

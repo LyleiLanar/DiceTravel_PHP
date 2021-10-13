@@ -1,15 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controller\Component;
 
 use App\Model\Entity\User;
-use App\Model\Table\UsersTable;
 use Cake\ORM\TableRegistry;
 
 class UsersComponent extends \Cake\Controller\Component
 {
     /**
-     * @var UsersTable
+     * @var \App\Model\Table\UsersTable
      */
     private $UsersTable;
 
@@ -19,12 +19,23 @@ class UsersComponent extends \Cake\Controller\Component
         $this->UsersTable = TableRegistry::getTableLocator()->get('Users');
     }
 
-    public function getUserNameById($id){
+    /**
+     * This method returns the login name by user id.
+     *
+     * @param int $id user_id
+     * @return string login_name
+     */
+    public function getUserNameById(int $id) : string
+    {
         /**
-         * @var User $user
+         * @var \App\Model\Entity\User $user
          */
-        $user = $this->UsersTable->find()->where(['id'=>$id])->select(['login_name'])->first();
-        return !is_null($user) ? $user->login_name : "perkele";
+        $user = $this->UsersTable->find()->where(['id' => $id])->select(['login_name'])->first();
+
+        return !is_null($user) ? $user->login_name : 'perkele';
     }
 
+    public function getUserById(int $id): ?User{
+        return $this->UsersTable->get($id);
+    }
 }

@@ -3,26 +3,27 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\Component\UsersComponent;
 use App\Model\Entity\Journey;
-use Cake\ORM\ResultSet;
-use SebastianBergmann\Type\IterableType;
+use Cake\ORM\Exception\PersistenceFailedException;
+use mysql_xdevapi\Exception;
+use PhpParser\Node\Expr\Array_;
+use function PHPUnit\Framework\isEmpty;
+use function PHPUnit\Framework\isNull;
+use function PHPUnit\Framework\throwException;
 
 /**
  * Journeys Controller
  *
  * @property \App\Model\Table\JourneysTable $Journeys
- * @property UsersComponent $C_Users
+ * @property \App\Controller\Component\UsersComponent $C_Users
  * @method \App\Model\Entity\Journey[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class JourneysController extends AppController
 {
-    public int $kacsa = 1;
-
     public function initialize(): void
     {
         parent::initialize();
-        $this->loadComponent('C_Users',['className'=>'Users']);
+        $this->loadComponent('C_Users', ['className' => 'Users']);
     }
 
     /**
@@ -56,21 +57,38 @@ class JourneysController extends AppController
      * Add method
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
+     * @throws \Exception
      */
     public function add()
     {
-        $journey = $this->Journeys->newEmptyEntity();
-        if ($this->request->is('post')) {
-            $journey = $this->Journeys->patchEntity($journey, $this->request->getData());
-            if ($this->Journeys->save($journey)) {
-                $this->Flash->success(__('The journey has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The journey could not be saved. Please, try again.'));
+        $success = true;
+        $message = "The Journey has been saved!";
+        if (!$this->getRequest()->is('ajax')) {
+            $success = false;
+            $message = 'You cannot do that!';
         }
-        $users = $this->Journeys->Users->find('list', ['limit' => 200]);
-        $this->set(compact('journey', 'users'));
+
+        //$entity = new Journey();
+        $entity = $this->Journeys->newEntity($this->getRequest()->getData());
+        $errors = $this->collectErrorMsgs($entity);
+
+        if (empty($errors)) {
+
+            try {
+                $entity = $this->Journeys->saveOrFail($entity);
+            } catch (PersistenceFailedException $e) {
+                $success = false;
+                $message = "Something went wrong: " . $e->getMessage();
+            }
+        } else {
+            $success = false;
+            $message = "Save was unsuccesfull, there are some errors: " . implode(' ', $errors);
+        }
+
+        $dataArray = ['success', 'message', 'entity'];
+        $this->set(compact($dataArray));
+        $this->viewBuilder()->setOption('serialize', $dataArray);
+
     }
 
     /**
@@ -116,5 +134,22 @@ class JourneysController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    private function collectErrorMsgs(?Journey $entity): array|null
+    {
+        if (!$entity) {
+            return null;
+        }
+
+        $returnErrors = [];
+
+        foreach ($entity->getErrors() as $fieldErrors) {
+            foreach ($fieldErrors as $error) {
+                //array_push($returnErrors, $error); // a procedurális módszer
+                $returnErrors[] = $error;
+            }
+        }
+        return $returnErrors;
     }
 }
