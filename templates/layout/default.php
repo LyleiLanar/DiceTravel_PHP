@@ -31,24 +31,28 @@
         'bootstrap',
         'fontawesome-all.css',
         'main-style',
-    //    'cake',
+        //    'cake',
     ]) ?>
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
     <?= $this->Html->script([
-          'jquery-3.6.0',
+        'jquery-3.6.0',
         'bootstrap.bundle.js',
-        ]) ?>
+        'moment-with-locales.js',
+    ]) ?>
     <?= $this->fetch('script') ?>
+    <?= $this->Html->scriptBlock("
+    const clientData = " . json_encode(!empty($clientData) ? $clientData : "{}") . ";
+    ") ?>
 </head>
 <body>
-    <main class="main">
-        <div class="container">
-            <?= $this->Flash->render() ?>
-            <?= $this->fetch('content') ?>
-        </div>
-    </main>
-    <footer>
-    </footer>
+<main class="main">
+    <div class="container">
+        <?= $this->Flash->render() ?>
+        <?= $this->fetch('content') ?>
+    </div>
+</main>
+<footer>
+</footer>
 </body>
 </html>

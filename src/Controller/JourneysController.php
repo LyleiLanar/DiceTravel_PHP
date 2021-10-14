@@ -3,7 +3,13 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Component\JourneysComponent;
+use App\Controller\Component\UsersComponent;
 use App\Model\Entity\Journey;
+use App\Model\Table\JourneysTable;
+use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Datasource\ResultSetInterface;
+use Cake\Http\Response;
 use Cake\ORM\Exception\PersistenceFailedException;
 use mysql_xdevapi\Exception;
 use PhpParser\Node\Expr\Array_;
@@ -16,6 +22,7 @@ use function PHPUnit\Framework\throwException;
  *
  * @property \App\Model\Table\JourneysTable $Journeys
  * @property \App\Controller\Component\UsersComponent $C_Users
+ * @property \App\Controller\Component\JourneysComponent $C_Journeys
  * @method \App\Model\Entity\Journey[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class JourneysController extends AppController
@@ -24,25 +31,31 @@ class JourneysController extends AppController
     {
         parent::initialize();
         $this->loadComponent('C_Users', ['className' => 'Users']);
+        $this->loadComponent('C_Journeys', ['className' => 'Journeys']);
     }
 
     /**
      * Index method
      *
-     * @return \Cake\Http\Response|null|void Renders view
+     * @return Response|null|void Renders view
      */
     public function index()
     {
-        $loginName = $this->C_Users->getUserNameById(70);
-        $this->set(compact(['loginName']));
+
+        $userId = 70; // ez majd más lesz
+
+        $loginName = $this->C_Users->getUserNameById($userId);
+        $activeJourney = $this->C_Journeys->getActiveJourneyByUserId($userId);
+        $this->C_ClientData->set('activeJourney', $activeJourney);
+        $this->set(compact(['loginName', 'activeJourney']));
     }
 
     /**
      * View method
      *
      * @param string|null $id Journey id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     * @return Response|null|void Renders view
+     * @throws RecordNotFoundException When record not found.
      */
     public function view($id = null)
     {
@@ -56,7 +69,7 @@ class JourneysController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
+     * @return Response|null|void Redirects on successful add, renders view otherwise.
      * @throws \Exception
      */
     public function add()
@@ -95,8 +108,8 @@ class JourneysController extends AppController
      * Edit method
      *
      * @param string|null $id Journey id.
-     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     * @return Response|null|void Redirects on successful edit, renders view otherwise.
+     * @throws RecordNotFoundException When record not found.
      */
     public function edit($id = null)
     {
@@ -120,8 +133,8 @@ class JourneysController extends AppController
      * Delete method
      *
      * @param string|null $id Journey id.
-     * @return \Cake\Http\Response|null|void Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     * @return Response|null|void Redirects to index.
+     * @throws RecordNotFoundException When record not found.
      */
     public function delete($id = null)
     {

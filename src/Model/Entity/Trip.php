@@ -10,7 +10,6 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property int $journey_id
- * @property int $serial_number
  * @property string $end_location
  * @property \Cake\I18n\FrozenTime|null $end_date
  * @property int $visibility
@@ -31,7 +30,6 @@ class Trip extends Entity
      */
     protected $_accessible = [
         'journey_id' => true,
-        'serial_number' => true,
         'end_location' => true,
         'end_date' => true,
         'visibility' => true,

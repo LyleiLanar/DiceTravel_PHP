@@ -25,6 +25,7 @@ use Cake\Controller\Controller;
  * will inherit them.
  *
  * @link https://book.cakephp.org/4/en/controllers.html#the-app-controller
+ * @property \App\Controller\Component\ClientDataComponent $C_ClientData
  */
 class AppController extends Controller
 {
@@ -43,6 +44,7 @@ class AppController extends Controller
 
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
+        $this->loadComponent('C_ClientData', ['className' => 'ClientData']);
 
         /*
          * Enable the following component for recommended CakePHP form protection settings.

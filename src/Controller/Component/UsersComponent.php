@@ -25,17 +25,18 @@ class UsersComponent extends \Cake\Controller\Component
      * @param int $id user_id
      * @return string login_name
      */
-    public function getUserNameById(int $id) : string
+    public function getUserNameById(int $id): string
     {
         /**
          * @var \App\Model\Entity\User $user
          */
         $user = $this->UsersTable->find()->where(['id' => $id])->select(['login_name'])->first();
 
-        return !is_null($user) ? $user->login_name : 'perkele';
+        return !is_null($user) ? $user->login_name : 'no user with this Id';
     }
 
-    public function getUserById(int $id): ?User{
+    public function getUserById(int $id): ?User
+    {
         return $this->UsersTable->get($id);
     }
 }

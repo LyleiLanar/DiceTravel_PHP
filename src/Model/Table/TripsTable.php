@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use ArrayObject;
+use Cake\Event\EventInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -66,11 +68,6 @@ class TripsTable extends Table
             ->allowEmptyString('id', null, 'create');
 
         $validator
-            ->integer('serial_number')
-            ->requirePresence('serial_number', 'create')
-            ->notEmptyString('serial_number');
-
-        $validator
             ->scalar('end_location')
             ->maxLength('end_location', 20)
             ->requirePresence('end_location', 'create')
@@ -100,4 +97,5 @@ class TripsTable extends Table
 
         return $rules;
     }
+
 }
