@@ -45,8 +45,10 @@ class JourneysController extends AppController
         $userId = 70; // ez majd más lesz
 
         $loginName = $this->C_Users->getUserNameById($userId);
+        $loggedUser = $this->C_Users->getUserById($userId);
         $activeJourney = $this->C_Journeys->getActiveJourneyByUserId($userId);
         $this->C_ClientData->set('activeJourney', $activeJourney);
+        $this->C_ClientData->set('loggedUser', $loggedUser);
         $this->set(compact(['loginName', 'activeJourney']));
     }
 

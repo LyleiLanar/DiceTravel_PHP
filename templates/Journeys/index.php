@@ -8,10 +8,13 @@
 ?>
 <div class="index content">
     <div id="dataview-row" class="row fs-5">
-        <div class="col border border-dark rounded-3 me-3 mb-5 bg-warning">
+        <div id="my-data" class="col border border-dark rounded-3 me-3 mb-5 bg-warning">
             <span class="boxname border border-dark rounded-3"><h3>My Data</h3></span>
             <div class="row">
-                <span id="txt-user-name"><?= $loginName ?></span>
+                <span id="txt-user-name"></span>
+            </div>
+            <div class="row">
+                <span id="txt-user-real-name"></span>
             </div>
             <div class="d-flex justify-content-end">
                 <span id="btn-md-modify"><i class="fas fa-cog"></i></span>

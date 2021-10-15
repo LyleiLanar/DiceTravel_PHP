@@ -73,13 +73,15 @@ const deleteJourney = function () {
 
 const initialize = function (){
 
-    $('#txt-active-journey').text(clienData.activeJourney.title);
-    $('#txt-active-journey-start-location').text(clienData.activeJourney.start_location);
-    $('#txt-active-journey-start-date').text(moment(clienData.activeJourney.start_date).locale('hu').format('L LT'));
-    $('#txt-active-trip-destination').text(clienData.activeJourney.trips[0].end_location);
+    $('#txt-user-name').text(clientData.loggedUser.login_name);
+    $('#txt-user-real-name').text((clientData.loggedUser.sur_name || '') +' '+ (clientData.loggedUser.first_name || ''));
+    $('#txt-active-journey').text(clientData.activeJourney.title);
+    $('#txt-active-journey-start-location').text(clientData.activeJourney.start_location);
+    $('#txt-active-journey-start-date').text(moment(clientData.activeJourney.start_date).locale('hu').format('L LT'));
+    $('#txt-active-trip-destination').text(clientData.activeJourney.trips[0].end_location);
 
-    setVisibility('journey', data.entity.visibility);
-    setVisibility('trip', data.entity.trips[0].visibility);
+    setVisibility('journey', clientData.activeJourney.visibility);
+    setVisibility('trip', clientData.activeJourney.trips[0].visibility);
 
 }
 
