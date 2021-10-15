@@ -73,16 +73,18 @@ const deleteJourney = function () {
 
 const initialize = function (){
 
+    //csinálni kell ide egy cliendData ellenőrzést, hogy null-e
     $('#txt-user-name').text(clientData.loggedUser.login_name);
     $('#txt-user-real-name').text((clientData.loggedUser.sur_name || '') +' '+ (clientData.loggedUser.first_name || ''));
-    $('#txt-active-journey').text(clientData.activeJourney.title);
-    $('#txt-active-journey-start-location').text(clientData.activeJourney.start_location);
-    $('#txt-active-journey-start-date').text(moment(clientData.activeJourney.start_date).locale('hu').format('L LT'));
-    $('#txt-active-trip-destination').text(clientData.activeJourney.trips[0].end_location);
+    if  (clientData.activeJourney) {
+        $('#txt-active-journey').text(clientData.activeJourney.title);
+        $('#txt-active-journey-start-location').text(clientData.activeJourney.start_location);
+        $('#txt-active-journey-start-date').text(moment(clientData.activeJourney.start_date).locale('hu').format('L LT'));
+        $('#txt-active-trip-destination').text(clientData.activeJourney.trips[0].end_location);
 
-    setVisibility('journey', clientData.activeJourney.visibility);
-    setVisibility('trip', clientData.activeJourney.trips[0].visibility);
-
+        setVisibility('journey', clientData.activeJourney.visibility);
+        setVisibility('trip', clientData.activeJourney.trips[0].visibility);
+    }
 }
 
 //onload

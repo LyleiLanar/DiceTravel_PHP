@@ -21,34 +21,34 @@
             </div>
         </div>
         <div id = "active-journey" class="col border border-dark rounded-3 me-3 mb-5 bg-warning">
-            <input type="hidden" value="<?= $activeJourney->id ?>" id="aj-id">
+            <input type="hidden" value="<?= $activeJourney?->id ? $activeJourney?->id : -1  ?>" id="aj-id">
             <span class="boxname border border-dark rounded-3"><h3>Active Journey</h3></span>
             <div class="visibilities d-flex justify-content-start">
 
                 <span id="active-journey-public" class="pe-1" data-visibility="2"
-                      style="<?= $activeJourney->visibility === 2 ? '' : "display: none;" ?>">
+                      style="">
                     <i class="fas fa-eye"></i>
                 </span>
 
                 <span id="active-journey-friends" class="pe-1" data-visibility="1"
-                      style="<?= $activeJourney->visibility === 1 ? '' : "display: none;" ?>">
+                      style="">
                     <i class="fas fa-beer"></i>
                 </span>
 
                 <span id="active-journey-private" class="pe-1" data-visibility="0"
-                      style="<?= $activeJourney->visibility === 0 ? '' : "display: none;" ?>">
+                      style="">
                     <i class="fas fa-eye-slash"></i>
                 </span>
 
-                <span id="txt-active-journey"><?= $activeJourney->title ?></span>
+                <span id="txt-active-journey"></span>
             </div>
             <div class="row">
                 <div class="col">
                     <div class="row">
-                        <span id="txt-active-journey-start-location"><?= $activeJourney->start_location ?></span>
+                        <span id="txt-active-journey-start-location"></span>
                     </div>
                     <div class="row">
-                        <span id="txt-active-journey-start-date"><?= $activeJourney->start_date ?></span>
+                        <span id="txt-active-journey-start-date"></span>
                     </div>
                 </div>
                 <div class="col d-flex justify-content-end">
@@ -59,26 +59,26 @@
             </div>
         </div>
         <div id = "active-trip" class="col border border-dark rounded-3 me-3 mb-5 bg-warning">
-            <input type="hidden" value="<?= reset($activeJourney->trips)->id ?>" id="aj-id">
+            <input type="hidden" value="" id="aj-id">
             <span class="boxname border border-dark rounded-3"><h3>Active Trip</h3></span>
             <div class="visibilities d-flex justify-content-start">
 
                 <span id="active-trip-public" class="pe-1" data-visibility="2"
-                      style="<?= reset($activeJourney->trips)->visibility === 2 ? '' : "display: none;" ?>">
+                      style="">
                     <i class="fas fa-eye"></i>
                 </span>
 
                 <span id="active-trip-friends" class="pe-1" data-visibility="1"
-                      style="<?= reset($activeJourney->trips)->visibility === 1 ? '' : "display: none;" ?>">
+                      style="">
                     <i class="fas fa-beer"></i>
                 </span>
 
                 <span id="active-trip-private" class="pe-1" data-visibility="0"
-                      style="<?= reset($activeJourney->trips)->visibility === 0 ? '' : "display: none;" ?>">
+                      style="">
                     <i class="fas fa-eye-slash"></i>
                 </span>
 
-                <span id="txt-active-trip-destination"><?= reset($activeJourney->trips)->end_location ?></span>
+                <span id="txt-active-trip-destination"></span>
             </div>
             <div class="row">
                 <div class="col">
