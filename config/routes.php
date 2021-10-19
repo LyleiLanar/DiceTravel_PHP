@@ -47,6 +47,7 @@ $routes->setRouteClass(DashedRoute::class);
 $routes->scope('/', function (RouteBuilder $builder) {
     $builder->setExtensions('json');
     $builder->connect('/', ['controller' => 'Journeys', 'action' => 'index']);
+    $builder->connect('/journey-delete/{id}', ['controller' => 'Journeys', 'action' => 'delete'])->setPass(['id']);
     $builder->fallbacks();
 });
 

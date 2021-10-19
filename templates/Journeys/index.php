@@ -82,12 +82,12 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <span class="" id="txt-active-trip-entrycount">sum_entries</span>
+                    <span class="" id="txt-active-trip-entrycount"></span>
                 </div>
                 <div class="col d-flex justify-content-end">
                     <span id="btn-at-finish"><i class="fas fa-flag"></i></span>
-                    <span id="btn-aj-add-entry"><i class="fas fa-feather-alt"></i></span>
-                    <span id="btn-aj-modify"><i class="fas fa-cog"></i></span>
+                    <span id="btn-at-add-entry"><i class="fas fa-feather-alt"></i></span>
+                    <span id="btn-at-modify"><i class="fas fa-cog"></i></span>
                 </div>
             </div>
         </div>

@@ -1,8 +1,8 @@
 
-*
-{
+* {
     margin: 0;
 }
+
 body {
     background: #badce3;
     box-sizing: border-box;
@@ -10,7 +10,7 @@ body {
     font-size: 16px;
 }
 
-#dataview-row{
+#dataview-row {
     background-color: #6cb2eb;
 }
 
@@ -31,8 +31,8 @@ body {
     width: 100%;
 }
 
-.boxname{
-    top:-12px;
+.boxname {
+    top: -12px;
     position: relative;
     background-color: orangered;
     display: block;
@@ -40,29 +40,35 @@ body {
     padding: 1vh 0.5em 1vh 0.5em;
 }
 
-#flow-frame-search-input-group{
-    top:-2em;
-    padding-right: 0.5em ;
+#flow-frame-search-input-group {
+    top: -2em;
+    padding-right: 0.5em;
     position: relative;
 }
 
-span .fas, span .far{
+span .fas, span .far {
     opacity: 0.8;
     padding: 0.2em;
 }
 
-span:hover .fas, span:hover .far{
+span:hover .fas, span:hover .far {
     opacity: 1;
     padding: 0.15em;
     color: #0b5ed7;
     border: #0a53be 0.05em solid;
 }
 
-.fas,.far{
+.fas, .far {
     font-size: 2em;
     margin: 0.2em;
 }
 
 .boxname:hover {
     filter: brightness(85%);
+}
+
+.dt_disable {
+    pointer-events: none;
+    opacity: 0.5;
+
 }

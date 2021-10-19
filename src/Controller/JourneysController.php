@@ -9,8 +9,11 @@ use App\Model\Entity\Journey;
 use App\Model\Table\JourneysTable;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Datasource\ResultSetInterface;
+use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Response;
 use Cake\ORM\Exception\PersistenceFailedException;
+use Cake\Routing\Route\Route;
+use Cake\Routing\Router;
 use mysql_xdevapi\Exception;
 use PhpParser\Node\Expr\Array_;
 use function PHPUnit\Framework\isEmpty;
@@ -41,14 +44,15 @@ class JourneysController extends AppController
      */
     public function index()
     {
+        $links = [];
+        $links['journeyDelete'] = Router::url(['controller' => 'Journeys', 'action' => 'delete'], true);
+
 
         $userId = 70; // ez majd más lesz
-
         $loginName = $this->C_Users->getUserNameById($userId);
         $loggedUser = $this->C_Users->getUserById($userId);
         $activeJourney = $this->C_Journeys->getActiveJourneyByUserId($userId);
-        $this->C_ClientData->set('activeJourney', $activeJourney);
-        $this->C_ClientData->set('loggedUser', $loggedUser);
+        $this->C_ClientData->set(compact(['activeJourney', 'loggedUser', 'links']));
         $this->set(compact(['loginName', 'activeJourney']));
     }
 
@@ -78,7 +82,14 @@ class JourneysController extends AppController
     {
         $success = true;
         $message = "The Journey has been saved!";
+
         if (!$this->getRequest()->is('ajax')) {
+            throw new \Exception('!!!Backend exception!!!');
+        }
+
+        try {
+            $this->getRequest()->allowMethod('POST');
+        } catch (MethodNotAllowedException $e) {
             $success = false;
             $message = 'You cannot do that!';
         }
@@ -138,17 +149,36 @@ class JourneysController extends AppController
      * @return Response|null|void Redirects to index.
      * @throws RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete($id)
     {
-        $this->request->allowMethod(['post', 'delete']);
-        $journey = $this->Journeys->get($id);
-        if ($this->Journeys->delete($journey)) {
-            $this->Flash->success(__('The journey has been deleted.'));
-        } else {
-            $this->Flash->error(__('The journey could not be deleted. Please, try again.'));
+        $success = true;
+        $message = 'The Journey has been DELETED!';
+
+        if (!$this->getRequest()->is('ajax')) {
+            throw new \Exception('!!!Backend exception!!!');
         }
 
-        return $this->redirect(['action' => 'index']);
+        try {
+            $this->getRequest()->allowMethod('DELETE');
+        } catch (MethodNotAllowedException $e) {
+            $success = false;
+            $message = 'You cannot do that!';
+        }
+
+        try {
+            $journey = $this->Journeys->get($id, ['contain' => ['Trips']]);
+            $this->Journeys->delete($journey);
+        } catch (\Exception $e) {
+            $success = false;
+            $message = "There is no Journey with the given id ($id)";
+        }
+
+        $success = true;
+        $message = "The Journey has been deleted!";
+
+        $dataArray = ['success', 'message'];
+        $this->set(compact($dataArray));
+        $this->viewBuilder()->setOption('serialize', $dataArray);
     }
 
     private function collectErrorMsgs(?Journey $entity): array|null

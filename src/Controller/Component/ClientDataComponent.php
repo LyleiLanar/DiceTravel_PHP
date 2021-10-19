@@ -7,9 +7,13 @@ class ClientDataComponent extends \Cake\Controller\Component
 
     private $data = [];
 
-    public function set($key, $value)
+    public function set($key, $value = null)
     {
-        $this->data[$key] = $value;
+        if (is_null($value) && is_array($key)) {
+            $this->data = $key;
+        } else {
+            $this->data[$key] = $value;
+        }
     }
 
     public function beforeRender()
