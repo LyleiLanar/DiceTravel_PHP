@@ -195,6 +195,43 @@
     </div>
 </div>
 
+<!--Ez lesz az Add/Edit Trip modal ablak-->
+<div class="modal fade" id="trip-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Active Trip</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post"
+                      action="<?= \Cake\Routing\Router::url(["controller" => "Trips", "action" => "add", "_ext" => "json"]) ?>">
+                    <h3>Trip data:</h3>
+
+                    <label for="journey-id" hidden></label>
+                    <input type="text" name="journey_id" id="journey-id" hidden>
+
+                    <label for="end-location">Destination</label>
+                    <input type="text" name="end_location" id="end-location">
+
+                    <label for="visibility">Visibility</label>
+                    <select name="visibility" id="visibility">
+                        <option value="2">Public</option>
+                        <option value="1">Only friends</option>
+                        <option value="0">Private</option>
+                    </select>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="btn-fin-journey">Finish Journey</button>
+                <button type="button" class="btn btn-primary" id="btn-ok">Next Trip</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--Ez lesz a comfirmation modal ablak-->
 <div class="modal fade" id="confirmation-modal" tabindex="-1">
     <div class="modal-dialog">

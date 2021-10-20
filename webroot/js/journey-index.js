@@ -1,11 +1,11 @@
 'use strict';
 
-let editJourneyModal,startJourneyModal, confirmationModal = null;
+let editJourneyModal, startJourneyModal, tripModal, confirmationModal = null;
 
 /**
  * @var clientData - It comes from the backend with essential information.
  *
- */
+ // */
 
 /**
  * This is the onload method.
@@ -15,9 +15,16 @@ $(function () {
     startJourneyModal = new bootstrap.Modal($("#start-journey-modal"));
     confirmationModal = new bootstrap.Modal($("#confirmation-modal"));
     editJourneyModal = new bootstrap.Modal($("#edit-journey-modal"))
+
+    tripModal = new bootstrap.Modal($("#trip-modal"));
+
     $("#active-journey #btn-save").on('click', showStartJourneyModal);
-    $("#active-journey #btn-modify").on('click', showEditJourneyModal);
     $("#active-journey #btn-delete").on('click', deleteJourneyModal);
+    $("#active-journey #btn-modify").on('click', showEditJourneyModal);
+
+    $("#active-trip #btn-finish").on('click', showEndTripModal);
+    $("#active-trip #btn-modify").on('click', showEditTripModal);
+
 });
 
 /**
@@ -106,6 +113,7 @@ const startJourneyProcess = function () {
             console.log(errorThrown);
         });
     startJourneyModal.hide();
+    $("#start-journey-modal #btn-save").off('click', startJourneyProcess);
 }
 
 const showEditJourneyModal = function () {
@@ -118,7 +126,9 @@ const showEditJourneyModal = function () {
 }
 
 const editJourneyProcess = function () {
-alert('The journey has been saved!');
+    $("#edit-journey-modal #btn-save").off('click', editJourneyProcess);
+    editJourneyModal.hide();
+    alert('The journey has been saved!');
 }
 
 /**
@@ -168,8 +178,75 @@ const deleteJourneyProcess = function () {
             $('#active-journey #start-date').text('');
 
             console.log(data);
+
+
         });
     // console.log('delete is complete!');
+}
+
+const showEndTripModal = function () {
+    $("#trip-modal form")[0].reset();
+    $("#trip-modal .modal-title").text("End Trip or Journey");
+    $("#trip-modal #journey-id").val(clientData.activeJourney.id);
+    $("#trip-modal #btn-ok").text("Go!").on('click', nextTripProcess);
+    $("#trip-modal #btn-fin-journey").on('click', endJounreyProcess).show();
+    tripModal.show();
+}
+
+const nextTripProcess = function () {
+
+    const tripForm = $("#trip-modal form");
+
+    $.ajax(
+        {
+            url: tripForm.attr('action'),
+            method: "POST",
+            data: tripForm.serializeArray(),
+            dataType: "json",
+        })
+        .done(function (data) {
+            if (data === null) {
+                alert('Backend function error! Error in save process...');
+                return;
+            }
+            console.log(data);
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+
+            alert('Fail! ' + jqXHR?.responseJSON?.message || jqXHR?.statusText || "FATAL error");
+
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+
+
+    $("#trip-modal #btn-ok").off('click', nextTripProcess);
+    $("#trip-modal #btn-fin-journey").off('click', endJounreyProcess).show();
+    tripModal.hide();
+}
+
+const endJounreyProcess = function () {
+    $("#trip-modal #btn-ok").off('click', nextTripProcess);
+    $("#trip-modal #btn-fin-journey").off('click', endJounreyProcess).show();
+    tripModal.hide();
+    alert('End Journey!');
+}
+
+function showEditTripModal() {
+    $("#trip-modal form")[0].reset();
+    $("#trip-modal .modal-title").text("Edit Active Trip");
+    $("#trip-modal #end-location").val(clientData.activeJourney.trips[0].end_location);
+    $("#trip-modal #visibility").val(clientData.activeJourney.trips[0].visibility);
+    $("#trip-modal #btn-ok").text("Save").on('click', editTripProcess);
+    $("#trip-modal #btn-fin-journey").hide();
+    tripModal.show();
+}
+
+function editTripProcess() {
+    $("#trip-modal #btn-ok").off('click', editTripProcess);
+    tripModal.hide();
+    alert('Edit Trip!');
 }
 
 const showConfirmationModal = function (verify, text) {
