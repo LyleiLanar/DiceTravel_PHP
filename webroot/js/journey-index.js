@@ -1,36 +1,65 @@
 'use strict';
 
+let editJourneyModal,startJourneyModal, confirmationModal = null;
+
 /**
- * @var clientData - it comes from the backend with essential information.
+ * @var clientData - It comes from the backend with essential information.
+ *
  */
 
-let journeyModal, confirmationModal = null;
+/**
+ * This is the onload method.
+ */
+$(function () {
+    initialize();
+    startJourneyModal = new bootstrap.Modal($("#start-journey-modal"));
+    confirmationModal = new bootstrap.Modal($("#confirmation-modal"));
+    editJourneyModal = new bootstrap.Modal($("#edit-journey-modal"))
+    $("#active-journey #btn-save").on('click', showStartJourneyModal);
+    $("#active-journey #btn-modify").on('click', showEditJourneyModal);
+    $("#active-journey #btn-delete").on('click', deleteJourneyModal);
+});
 
-const showModal = function (modal) {
-    modal.show();
-}
-const hideModal = function (modal) {
-    modal.hide();
+/**
+ * This method initialize the index page.
+ */
+const initialize = function () {
+    $('#active-journey div.visibilities span[data-visibility]').hide();
+    $('#active-trip div.visibilities span[data-visibility]').hide();
+    $('#my-data #user-name').text(clientData.loggedUser.login_name);
+    $('#my-data #real-name').text((clientData.loggedUser.sur_name || '') + ' ' + (clientData.loggedUser.first_name || ''));
+    if (clientData.activeJourney) {
+        $('#active-journey #btn-save').addClass("dt_disable");
+        $('#active-journey #title').text(clientData.activeJourney.title);
+        $('#active-journey #start-location').text(clientData.activeJourney.start_location);
+        $('#active-journey #start-date').text(moment(clientData.activeJourney.start_date).locale('hu').format('L LT'));
+        $('#active-trip #destination').text(clientData.activeJourney.trips[0].end_location);
+
+        setVisibility('journey', clientData.activeJourney.visibility);
+        setVisibility('trip', clientData.activeJourney.trips[0].visibility);
+    } else {
+        clientData.activeJourney = null;
+        $('#active-journey #btn-save').removeClass("dt_disable");
+        $('#active-journey #btn-delete').addClass("dt_disable");
+        $('#active-journey #btn-modify').addClass("dt_disable");
+
+        $('#active-trip #btn-finish').addClass("dt_disable");
+        $('#active-trip #btn-add-entry').addClass("dt_disable");
+        $('#active-trip #btn-modify').addClass("dt_disable");
+
+        $('#active-journey #title').text('No Active Journey');
+        $('#active-trip #destination').text('No Active Journey');
+    }
 }
 
-const showConfirmationModal = function (verify, text) {
-    $('#txt-confirmation').text(text);
-    $('#btn-confirmation-ok').on('click', verify);
-    confirmationModal.show();
+const showStartJourneyModal = function () {
+    $("#start-journey-modal form")[0].reset();
+    $("#start-journey-modal #btn-save").on('click', startJourneyProcess);
+    startJourneyModal.show();
 }
 
-const hideConfirmationModal = function () {
-    $('#btn-confirmation-ok').off();
-    confirmationModal.hide();
-}
-
-const setVisibility = function (what, visibility) {
-    $('#active-' + what + ' div.visibilities span[data-visibility]').hide();
-    $('#active-' + what + ' div.visibilities span[data-visibility=' + visibility + ']').show();
-}
-
-const startJourney = function () {
-    const journeyForm = $("#form-new-journey");
+const startJourneyProcess = function () {
+    const journeyForm = $("#start-journey-modal form");
 
     $.ajax(
         {
@@ -47,21 +76,21 @@ const startJourney = function () {
             if (data.success === true) {
                 console.log(data);
                 clientData.activeJourney = data.entity;
-                $('#txt-active-journey').text(data.entity.title);
-                $('#txt-active-journey-start-location').text(data.entity.start_location);
-                $('#txt-active-journey-start-date').text(moment(data.entity.start_date).locale('hu').format('L LT'));
-                $('#txt-active-trip-destination').text(data.entity.trips[0].end_location);
+                $('#active-journey #title').text(data.entity.title);
+                $('#active-journey #start-location').text(data.entity.start_location);
+                $('#active-journey #start-date').text(moment(data.entity.start_date).locale('hu').format('L LT'));
+                $('#active-trip #destination').text(data.entity.trips[0].end_location);
 
                 setVisibility('journey', data.entity.visibility);
                 setVisibility('trip', data.entity.trips[0].visibility);
 
-                $('#btn-aj-delete').removeClass("dt_disable");
-                $('#btn-aj-modify').removeClass("dt_disable");
+                $('#active-journey #btn-save').addClass("dt_disable");
+                $('#active-journey #btn-delete').removeClass("dt_disable");
+                $('#active-journey #btn-modify').removeClass("dt_disable");
 
-                $('#btn-at-finish').removeClass("dt_disable");
-                $('#btn-at-add-entry').removeClass("dt_disable");
-                $('#btn-at-modify').removeClass("dt_disable");
-
+                $('#active-trip #btn-finish').removeClass("dt_disable");
+                $('#active-trip #btn-add-entry').removeClass("dt_disable");
+                $('#active-trip #btn-modify').removeClass("dt_disable");
 
 
             } else {
@@ -76,10 +105,40 @@ const startJourney = function () {
             console.log(textStatus);
             console.log(errorThrown);
         });
-    journeyModal.hide();
+    startJourneyModal.hide();
 }
 
-const deleteJourney = function () {
+const showEditJourneyModal = function () {
+    $("#edit-journey-modal form")[0].reset();
+    $("#edit-journey-modal #title").val(clientData.activeJourney.title);
+    $("#edit-journey-modal #startlocation").val(clientData.activeJourney.start_location);
+    $("#edit-journey-modal #visibility").val(clientData.activeJourney.visibility);
+    $("#edit-journey-modal #btn-save").on('click', editJourneyProcess);
+    editJourneyModal.show();
+}
+
+const editJourneyProcess = function () {
+alert('The journey has been saved!');
+}
+
+/**
+ * Ez ellenőrzi, hogy van-e egyáltalán mit törölni.
+ * Ha igen, akkor megnyitja a modalt, ahol OK-ra elindítja a törlési folyamatot a deleteJourneyProcess segítségével
+ * Ha nem, akkor alertet dob.
+ */
+const deleteJourneyModal = function () {
+    if (clientData?.activeJourney?.id) {
+        showConfirmationModal(deleteJourneyProcess, constants.journey.DELETE_JOURNEY_CONFRIM)
+    } else {
+        alert('No Journey selected!');
+    }
+}
+
+/**
+ * Ez végzi a tényleges törlését a Journeynek. Ajax-szal.
+ */
+const deleteJourneyProcess = function () {
+
     hideConfirmationModal();
 
     $.ajax(
@@ -93,60 +152,39 @@ const deleteJourney = function () {
             $('#active-journey div.visibilities span[data-visibility]').hide();
             $('#active-trip div.visibilities span[data-visibility]').hide();
             clientData.activeJourney = null;
-            $('#btn-aj-delete').addClass("dt_disable");
-            $('#btn-aj-modify').addClass("dt_disable");
 
-            $('#btn-at-finish').addClass("dt_disable");
-            $('#btn-at-add-entry').addClass("dt_disable");
-            $('#btn-at-modify').addClass("dt_disable");
+            $('#active-journey #btn-save').removeClass("dt_disable");
+            $('#active-journey #btn-delete').addClass("dt_disable");
+            $('#active-journey #btn-modify').addClass("dt_disable");
 
-            $('#txt-active-journey').text('No Active Journey');
-            $('#txt-active-trip-destination').text('No Active Journey');
+            $('#active-trip #btn-finish').addClass("dt_disable");
+            $('#active-trip #btn-add-entry').addClass("dt_disable");
+            $('#active-trip #btn-modify').addClass("dt_disable");
 
-            $('#txt-active-journey-start-location').text('');
-            $('#txt-active-journey-start-date').text('');
+            $('#active-journey #title').text('No Active Journey');
+            $('#active-trip #destination').text('No Active Journey');
+
+            $('#active-journey #start-location').text('');
+            $('#active-journey #start-date').text('');
 
             console.log(data);
         });
     // console.log('delete is complete!');
 }
 
-const initialize = function () {
-    $('#active-journey div.visibilities span[data-visibility]').hide();
-    $('#active-trip div.visibilities span[data-visibility]').hide();
-    //csinálni kell ide egy cliendData ellenőrzést, hogy null-e
-    $('#txt-user-name').text(clientData.loggedUser.login_name);
-    $('#txt-user-real-name').text((clientData.loggedUser.sur_name || '') + ' ' + (clientData.loggedUser.first_name || ''));
-    if (clientData.activeJourney) {
-        $('#txt-active-journey').text(clientData.activeJourney.title);
-        $('#txt-active-journey-start-location').text(clientData.activeJourney.start_location);
-        $('#txt-active-journey-start-date').text(moment(clientData.activeJourney.start_date).locale('hu').format('L LT'));
-        $('#txt-active-trip-destination').text(clientData.activeJourney.trips[0].end_location);
-
-        setVisibility('journey', clientData.activeJourney.visibility);
-        setVisibility('trip', clientData.activeJourney.trips[0].visibility);
-    } else {
-        clientData.activeJourney = null;
-        $('#btn-aj-delete').addClass("dt_disable");
-        $('#btn-aj-modify').addClass("dt_disable");
-
-        $('#btn-at-finish').addClass("dt_disable");
-        $('#btn-at-add-entry').addClass("dt_disable");
-        $('#btn-at-modify').addClass("dt_disable");
-
-        $('#txt-active-journey').text('No Active Journey');
-        $('#txt-active-trip-destination').text('No Active Journey');
-    }
+const showConfirmationModal = function (verify, text) {
+    $('#txt-confirmation').text(text);
+    $('#btn-confirmation-ok').on('click', verify);
+    confirmationModal.show();
 }
 
-//onload
-$(function () {
-    initialize();
-    journeyModal = new bootstrap.Modal($("#journey-modal"));
-    confirmationModal = new bootstrap.Modal($("#confirmation-modal"));
-    $("#btn-aj-start").on('click', showModal.bind(null, journeyModal));
-    $("#btn-aj-modify").on('click', showModal.bind(null, journeyModal));
-    $("#btn-start-journey").on('click', startJourney);
-    $("#btn-aj-delete").on('click', showConfirmationModal.bind(null, deleteJourney, constants.journey.DELETE_JOURNEY_CONFRIM));
-    //itt is meg kellene oldani, hogy a megfelelő metódust bindoljuk rá az ok gombra, attól függően, hogy update vagy start történik
-});
+const setVisibility = function (what, visibility) {
+    $('#active-' + what + ' div.visibilities span[data-visibility]').hide();
+    $('#active-' + what + ' div.visibilities span[data-visibility=' + visibility + ']').show();
+}
+
+const hideConfirmationModal = function () {
+    $('#btn-confirmation-ok').off();
+    confirmationModal.hide();
+}
+
