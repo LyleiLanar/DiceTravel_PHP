@@ -28,7 +28,7 @@ use function PHPUnit\Framework\throwException;
  * @property \App\Controller\Component\JourneysComponent $C_Journeys
  * @method \App\Model\Entity\Journey[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-class JourneysController extends AppController
+class JourneysController extends BasicController
 {
     public function initialize(): void
     {
@@ -126,7 +126,7 @@ class JourneysController extends AppController
         }
 
         try {
-            $journey = $this->Journeys->get($id, ['contain' => "Trips"]);
+            $journey = $this->C_Journeys->getActiveJourneyById($id);
             $journey = $this->Journeys->patchEntity($journey, $this->request->getData());
 
             $errors = $this->collectErrorMsgs($journey);
@@ -192,22 +192,5 @@ class JourneysController extends AppController
         $dataArray = ['success', 'message'];
         $this->set(compact($dataArray));
         $this->viewBuilder()->setOption('serialize', $dataArray);
-    }
-
-    private function collectErrorMsgs(?Journey $entity): array|null
-    {
-        if (!$entity) {
-            return null;
-        }
-
-        $returnErrors = [];
-
-        foreach ($entity->getErrors() as $fieldErrors) {
-            foreach ($fieldErrors as $error) {
-                //array_push($returnErrors, $error); // a procedurális módszer
-                $returnErrors[] = $error;
-            }
-        }
-        return $returnErrors;
     }
 }
