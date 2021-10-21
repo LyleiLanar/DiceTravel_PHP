@@ -40,7 +40,7 @@ body {
     padding: 1vh 0.5em 1vh 0.5em;
 }
 
-#flow-frame-search-input-group {
+#flow-frame .search-input-group {
     top: -2em;
     padding-right: 0.5em;
     position: relative;

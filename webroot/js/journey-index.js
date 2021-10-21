@@ -61,7 +61,7 @@ const initialize = function () {
 
 const showStartJourneyModal = function () {
     $("#start-journey-modal form")[0].reset();
-    $("#start-journey-modal .btn-save").on('click', startJourneyProcess);
+    $("#start-journey-modal .btn-save").off('click').on('click', startJourneyProcess);
     startJourneyModal.show();
 }
 
@@ -188,8 +188,8 @@ const showEndTripModal = function () {
     $("#trip-modal form")[0].reset();
     $("#trip-modal .modal-title").text("End Trip or Journey");
     $("#trip-modal .journey-id").val(clientData.activeJourney.id);
-    $("#trip-modal .btn-ok").text("Go!").on('click', nextTripProcess);
-    $("#trip-modal .btn-fin-journey").on('click', endJounreyProcess).show();
+    $("#trip-modal .btn-ok").text("Go!").off('click').on('click', nextTripProcess);
+    $("#trip-modal .btn-fin-journey").off('click').on('click', endJounreyProcess).show();
     tripModal.show();
 }
 
@@ -244,7 +244,7 @@ function showEditTripModal() {
     $("#trip-modal .modal-title").text("Edit Active Trip");
     $("#trip-modal .end-location").val(clientData.activeJourney.trips[0].end_location);
     $("#trip-modal .visibility").val(clientData.activeJourney.trips[0].visibility);
-    $("#trip-modal .btn-ok").text("Save").on('click', editTripProcess);
+    $("#trip-modal .btn-ok").text("Save").off('click').on('click', editTripProcess);
     $("#trip-modal .btn-fin-journey").hide();
     tripModal.show();
 }
@@ -257,7 +257,7 @@ function editTripProcess() {
 
 const showConfirmationModal = function (verify, text) {
     $('.txt-confirmation').text(text);
-    $('.btn-confirmation-ok').on('click', verify);
+    $('.btn-confirmation-ok').off('click').on('click', verify);
     confirmationModal.show();
 }
 
