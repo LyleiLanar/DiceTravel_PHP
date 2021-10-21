@@ -47,6 +47,7 @@ class JourneysController extends BasicController
         $links = [];
         $links['journeyDelete'] = Router::url(['controller' => 'Journeys', 'action' => 'delete'], true);
         $links['journeyEdit'] = Router::url(['controller' => 'Journeys', 'action' => 'edit'], true);
+        $links['tripEdit'] = Router::url(['controller' => 'Trips', 'action' => 'edit'], true);
 
 
         $userId = 70; // ez majd más lesz

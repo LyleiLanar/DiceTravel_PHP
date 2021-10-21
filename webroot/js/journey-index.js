@@ -148,14 +148,12 @@ const editJourneyProcess = function () {
                 $('#active-journey .start-location').text(data.entity.start_location);
 
                 setVisibility('journey', data.entity.visibility);
-                setVisibility('trip', data.entity.trips[0].visibility);
+
 
             } else {
                 alert(data.message);
             }
-        })
-
-
+        });
     editJourneyModal.hide();
 }
 
@@ -277,10 +275,31 @@ function showEditTripModal() {
     tripModal.show();
 }
 
-function editTripProcess() {
-    $("#trip-modal .btn-ok").off('click', editTripProcess);
+const editTripProcess = function () {
+    let data = $("#trip-modal form").serializeArray();
+    data.push({name: "journey_id", value: clientData.activeJourney.id});
+
+    $.ajax({
+        url: clientData.links.tripEdit + "/" + clientData.activeJourney.trips[0].id,
+        method: "PATCH",
+        data: data,
+        dataType: "json",
+    })
+        .done(function (data) {
+            if (data === null) {
+                alert('Backend function error! Error in save process...');
+                return;
+            }
+            if (data.success === true) {
+                clientData.activeJourney.trips[0] = data.entity;
+
+                $('#active-trip .destination').text(clientData.activeJourney.trips[0].end_location);
+                setVisibility('trip', data.entity.visibility);
+            } else {
+                alert(data.message);
+            }
+        });
     tripModal.hide();
-    alert('Edit Trip!');
 }
 
 const showConfirmationModal = function (verify, text) {

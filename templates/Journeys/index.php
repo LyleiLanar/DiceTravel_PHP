@@ -204,9 +204,6 @@
                 <form method="post"
                       action="<?= \Cake\Routing\Router::url(["controller" => "Trips", "action" => "add", "_ext" => "json"]) ?>">
                     <h3>Trip data:</h3>
-
-                    <input type="hidden" name="journey_id" class="journey-id">
-
                     <label for="end-location">Destination</label>
                     <input type="text" name="end_location" class="end-location">
 
