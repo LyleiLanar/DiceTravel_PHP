@@ -48,7 +48,10 @@ $routes->scope('/', function (RouteBuilder $builder) {
     $builder->setExtensions('json');
     $builder->connect('/', ['controller' => 'Journeys', 'action' => 'index']);
     $builder->connect('/journey-delete/{id}', ['controller' => 'Journeys', 'action' => 'delete'])->setPass(['id']);
+    $builder->connect('/journey-edit/{id}', ['controller' => 'Journeys', 'action' => 'edit'])->setPass(['id']);
+
     $builder->connect('/trip-add/', ['controller' => 'Trips', 'action' => 'post']);
+    $builder->connect('/trip-edit/{id}', ['controller' => 'Trips', 'action' => 'edit'])->setPass(['id']);
     $builder->fallbacks();
 });
 

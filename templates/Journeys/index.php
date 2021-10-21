@@ -169,6 +169,7 @@
                 <form method="post"
                       action="<?= \Cake\Routing\Router::url(["controller" => "Journeys", "action" => "add", "_ext" => "json"]) ?>">
                     <h3>Journey data:</h3>
+
                     <label for="title">Title</label>
                     <input type="text" name="title" class="title">
 

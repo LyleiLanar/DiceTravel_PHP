@@ -81,7 +81,6 @@ const startJourneyProcess = function () {
                 return;
             }
             if (data.success === true) {
-                console.log(data);
                 clientData.activeJourney = data.entity;
                 $('#active-journey .title').text(data.entity.title);
                 $('#active-journey .start-location').text(data.entity.start_location);
@@ -126,9 +125,38 @@ const showEditJourneyModal = function () {
 }
 
 const editJourneyProcess = function () {
-    //$("#edit-journey-modal #btn-save").off('click', editJourneyProcess);
+
+    const journeyForm = $("#edit-journey-modal form");
+
+    $.ajax(
+        {
+            url: clientData.links.journeyEdit + "/" + clientData.activeJourney.id,
+            method: "PATCH",
+            data: journeyForm.serializeArray(),
+            dataType: "json",
+        }
+    )
+        .done(function (data) {
+            if (data === null) {
+                alert('Backend function error! Error in save process...');
+                return;
+            }
+            if (data.success === true) {
+
+                clientData.activeJourney = data.entity;
+                $('#active-journey .title').text(data.entity.title);
+                $('#active-journey .start-location').text(data.entity.start_location);
+
+                setVisibility('journey', data.entity.visibility);
+                setVisibility('trip', data.entity.trips[0].visibility);
+
+            } else {
+                alert(data.message);
+            }
+        })
+
+
     editJourneyModal.hide();
-    alert('The journey has been saved!');
 }
 
 /**

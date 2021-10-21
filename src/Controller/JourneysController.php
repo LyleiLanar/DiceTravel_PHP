@@ -46,6 +46,7 @@ class JourneysController extends AppController
     {
         $links = [];
         $links['journeyDelete'] = Router::url(['controller' => 'Journeys', 'action' => 'delete'], true);
+        $links['journeyEdit'] = Router::url(['controller' => 'Journeys', 'action' => 'edit'], true);
 
 
         $userId = 70; // ez majd más lesz
@@ -54,22 +55,6 @@ class JourneysController extends AppController
         $activeJourney = $this->C_Journeys->getActiveJourneyByUserId($userId);
         $this->C_ClientData->set(compact(['activeJourney', 'loggedUser', 'links']));
         $this->set(compact(['loginName', 'activeJourney']));
-    }
-
-    /**
-     * View method
-     *
-     * @param string|null $id Journey id.
-     * @return Response|null|void Renders view
-     * @throws RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $journey = $this->Journeys->get($id, [
-            'contain' => ['Users', 'JourenyParticipants', 'Trips'],
-        ]);
-
-        $this->set(compact('journey'));
     }
 
     /**
@@ -124,22 +109,50 @@ class JourneysController extends AppController
      * @return Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit($id)
     {
-        $journey = $this->Journeys->get($id, [
-            'contain' => [],
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $journey = $this->Journeys->patchEntity($journey, $this->request->getData());
-            if ($this->Journeys->save($journey)) {
-                $this->Flash->success(__('The journey has been saved.'));
+        $success = true;
+        $message = "The Journey has been saved!";
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The journey could not be saved. Please, try again.'));
+        if (!$this->getRequest()->is('ajax')) {
+            throw new \Exception('!!!Backend exception!!!');
         }
-        $users = $this->Journeys->Users->find('list', ['limit' => 200]);
-        $this->set(compact('journey', 'users'));
+
+        try {
+            $this->getRequest()->allowMethod('PATCH');
+        } catch (MethodNotAllowedException $e) {
+            $success = false;
+            $message = 'You cannot do that!';
+        }
+
+        try {
+            $journey = $this->Journeys->get($id, ['contain' => "Trips"]);
+            $journey = $this->Journeys->patchEntity($journey, $this->request->getData());
+
+            $errors = $this->collectErrorMsgs($journey);
+
+            if (empty($errors)) {
+
+                try {
+                    $entity = $this->Journeys->saveOrFail($journey);
+                } catch (PersistenceFailedException $e) {
+                    $success = false;
+                    $message = "Something went wrong: " . $e->getMessage();
+                }
+            } else {
+                $success = false;
+                $message = "Save was unsuccesfull, there are some errors: " . implode(' ', $errors);
+            }
+
+        } catch (\Exception $e) {
+            $success = false;
+            $message = 'No such element with this id: #' . $id;
+        }
+
+        $dataArray = ['success', 'message', 'entity'];
+        $this->set(compact($dataArray));
+        $this->viewBuilder()->setOption('serialize', $dataArray);
+
     }
 
     /**
